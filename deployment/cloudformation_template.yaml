@@ -1,0 +1,119 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: CloudFormation template for DataForge Licensing Server
+
+Resources:
+  LicensingServerRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: LicensingServerLambdaPolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource: '*'
+              # Add additional policies for database access, etc.
+
+  RegisterUserLambdaFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code: 
+        S3Bucket: licensingserver
+        S3Key: functions/registerUser.zip
+      Handler: registerUser.lambda_handler
+      Role: !GetAtt LicensingServerRole.Arn
+      Runtime: python3.8
+      Timeout: 30
+
+  RegisterProductLambdaFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code: 
+        S3Bucket: licensingserver
+        S3Key: functions/registerProduct.zip
+      Handler: registerProduct.lambda_handler
+      Role: !GetAtt LicensingServerRole.Arn
+      Runtime: python3.8
+      Timeout: 30
+
+  ActivateLicenseLambdaFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code: 
+        S3Bucket: licensingserver
+        S3Key: functions/activateLicense.zip
+      Handler: activateLicense.lambda_handler
+      Role: !GetAtt LicensingServerRole.Arn
+      Runtime: python3.8
+      Timeout: 30
+
+  DeactivateLicenseLambdaFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code: 
+        S3Bucket: licensingserver
+        S3Key: functions/deactivateLicense.zip
+      Handler: deactivateLicense.lambda_handler
+      Role: !GetAtt LicensingServerRole.Arn
+      Runtime: python3.8
+      Timeout: 30
+
+  CreateLicenseLambdaFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code: 
+        S3Bucket: licensingserver
+        S3Key: functions/createLicense.zip
+      Handler: createLicense.lambda_handler
+      Role: !GetAtt LicensingServerRole.Arn
+      Runtime: python3.8
+      Timeout: 30
+
+  ValidateLicenseLambdaFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code: 
+        S3Bucket: licensingserver
+        S3Key: functions/validateLicense.zip
+      Handler: validateLicense.lambda_handler
+      Role: !GetAtt LicensingServerRole.Arn
+      Runtime: python3.8
+      Timeout: 30
+
+  LicensingApi:
+    Type: AWS::ApiGateway::RestApi
+    Properties:
+      Name: DataForgeLicensingApi
+      Description: API for DataForge Licensing Server
+      BodyS3Location:
+        Bucket: licensingserver
+        Key: api-gateway/api_definitions.yaml
+
+  LicensingApiDeployment:
+    Type: AWS::ApiGateway::Deployment
+    DependsOn:
+      - RegisterUserLambdaFunction
+      - RegisterProductLambdaFunction
+      - ActivateLicenseLambdaFunction
+      - DeactivateLicenseLambdaFunction
+      - CreateLicenseLambdaFunction
+      - ValidateLicenseLambdaFunction
+    Properties:
+      RestApiId: !Ref LicensingApi
+      StageName: prod
+
+Outputs:
+  LicensingApiUrl:
+    Description: URL of the DataForge Licensing API
+    Value: !Sub 'https://${LicensingApi}.execute-api.${AWS::Region}.amazonaws.com/prod'

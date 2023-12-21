@@ -1,0 +1,154 @@
+openapi: "3.0.0"
+info:
+  title: "DataForge Licensing Server"
+  version: "1.0.0"
+
+paths:
+  /registerUser:
+    post:
+      summary: "Register a new user"
+      operationId: "registerUser"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                company:
+                  type: string
+      responses:
+        '201':
+          description: "User registered successfully"
+        '400':
+          description: "Invalid request"
+
+  /registerProduct:
+    post:
+      summary: "Register a new product"
+      operationId: "registerProduct"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                productName:
+                  type: string
+                description:
+                  type: string
+      responses:
+        '201':
+          description: "Product registered successfully"
+        '400':
+          description: "Invalid request"
+
+  /activateLicense:
+    post:
+      summary: "Activate a license"
+      operationId: "activateLicense"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                licenseKey:
+                  type: string
+                productID:
+                  type: string
+                userID:
+                  type: string
+                deviceID:
+                  type: string
+      responses:
+        '200':
+          description: "License activated successfully"
+        '400':
+          description: "Invalid request"
+
+  /deactivateLicense:
+    post:
+      summary: "Deactivate a license"
+      operationId: "deactivateLicense"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                licenseKey:
+                  type: string
+                deviceID:
+                  type: string
+      responses:
+        '200':
+          description: "License deactivated successfully"
+        '400':
+          description: "Invalid request"
+
+  /createLicense:
+    post:
+      summary: "Create a new license"
+      operationId: "createLicense"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                productID:
+                  type: string
+                userID:
+                  type: string
+                expiryDate:
+                  type: string  # Ensure the date format is clearly documented
+      responses:
+        '201':
+          description: "License created successfully"
+        '400':
+          description: "Invalid request"
+
+  /validateLicense:
+    post:
+      summary: "Validate a license"
+      operationId: "validateLicense"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                licenseKey:
+                  type: string
+                productID:
+                  type: string
+                deviceID:
+                  type: string
+      responses:
+        '200':
+          description: "License is valid"
+        '400':
+          description: "Invalid request"
+        '404':
+          description: "License not found"
+
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-api-key
+
+security:
+  - ApiKeyAuth: []
+

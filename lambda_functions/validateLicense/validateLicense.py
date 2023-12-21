@@ -1,13 +1,12 @@
 import json
 import datetime
-from db_utils import get_db_connection
+from shared.db_utils import execute_query, get_db_connection
 from shared.logger import log_event
 
-def log_event(function_name, event_type, message, additional_info=None):
-    # Assuming log_event is defined in this file or imported from another module
-    # ...
-
 def validateLicense(event, context):
+    """
+    Validate a license key for a given product and device.
+    """
     if 'licenseKey' not in event or 'productID' not in event or 'deviceID' not in event:
         log_event('validateLicense', 'Error', 'Invalid input', event)
         return {'statusCode': 400, 'body': json.dumps('Bad Request: Missing required parameters')}
@@ -17,21 +16,15 @@ def validateLicense(event, context):
         product_id = event['productID']
         device_id = event['deviceID']
 
-        # Database connection
-        connection = get_db_connection()
-        cursor = connection.cursor()
+        # Validate the license logic
+        license = execute_query("SELECT * FROM licenses WHERE LicenseKey = %s AND ProductID = %s", (license_key, product_id), fetch_one=True)
 
-        # Validate the license logic...
-        # Example query (you'll need to adjust this according to your schema and logic)
-        cursor.execute("SELECT * FROM licenses WHERE LicenseKey = %s AND ProductID = %s", (license_key, product_id))
-        license = cursor.fetchone()
+        if not license:
+            log_event('validateLicense', 'Error', 'License not found', {'licenseKey': license_key, 'productID': product_id})
+            return {'statusCode': 404, 'body': json.dumps('License not found')}
 
-        # Logic to validate the license based on the query result
+        # Additional logic to validate the license based on the query result
         # ...
-
-        # Close the database connection
-        cursor.close()
-        connection.close()
 
         return {'statusCode': 200, 'body': json.dumps('License Validated Successfully')}
 

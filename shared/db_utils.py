@@ -1,9 +1,9 @@
 import pymysql
+import json
 
 def get_db_connection():
     """
     Creates a connection to the MariaDB database and returns the connection object.
-    Make sure to replace the placeholders with your actual database details.
     """
     try:
         connection = pymysql.connect(
@@ -19,3 +19,29 @@ def get_db_connection():
         print("ERROR: Unexpected error: Could not connect to MariaDB instance.")
         print(e)
         raise
+
+def execute_query(sql, params=None, fetch_one=False):
+    """
+    Executes a given SQL query with optional parameters and returns the result.
+    """
+    connection = get_db_connection()
+    with connection.cursor() as cursor:
+        cursor.execute(sql, params)
+        if fetch_one:
+            result = cursor.fetchone()
+        else:
+            result = cursor.fetchall()
+    connection.close()
+    return result
+
+def insert_record(sql, params):
+    """
+    Inserts a record into the database.
+    """
+    connection = get_db_connection()
+    with connection.cursor() as cursor:
+        cursor.execute(sql, params)
+        connection.commit()
+    connection.close()
+
+# Additional utility functions can be added here
