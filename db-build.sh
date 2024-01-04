@@ -1,3 +1,5 @@
+#!/bin/bash
+
 aws rds create-db-instance \
     --db-instance-identifier license-db \
     --allocated-storage 20 \
