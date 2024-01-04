@@ -1,6 +1,5 @@
 import json
-import datetime
-from shared.db_utils import insert_record, get_db_connection
+from shared.db_utils import insert_record
 from shared.logger import log_event
 
 def registerUser(event, context):

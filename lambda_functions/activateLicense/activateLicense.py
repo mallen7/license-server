@@ -1,5 +1,4 @@
 import json
-import datetime
 from shared.db_utils import execute_query
 import shared.logger as logger
 
@@ -15,7 +14,6 @@ def activateLicense(event, context):
         license_key = event['licenseKey']
         product_id = event['productID']
         user_id = event['userID']
-        device_id = event['deviceID']
 
         # Update the license activation status in the database
         update_query = "UPDATE licenses SET IsActive = %s WHERE LicenseKey = %s AND ProductID = %s AND UserID = %s"

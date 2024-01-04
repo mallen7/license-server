@@ -1,6 +1,5 @@
 import json
-import datetime
-from shared.db_utils import execute_query, get_db_connection
+from shared.db_utils import execute_query
 from shared.logger import log_event
 
 def validateLicense(event, context):
@@ -14,7 +13,6 @@ def validateLicense(event, context):
     try:
         license_key = event['licenseKey']
         product_id = event['productID']
-        device_id = event['deviceID']
 
         # Validate the license logic
         license = execute_query("SELECT * FROM licenses WHERE LicenseKey = %s AND ProductID = %s", (license_key, product_id), fetch_one=True)

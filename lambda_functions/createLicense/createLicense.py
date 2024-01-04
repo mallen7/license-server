@@ -1,5 +1,4 @@
 import json
-import datetime
 from shared.logger import log_event
 from shared.db_utils import insert_record
 

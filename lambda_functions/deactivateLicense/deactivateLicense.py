@@ -1,7 +1,6 @@
 import json
-import datetime
 from shared.logger import log_event
-from shared.db_utils import get_db_connection, execute_query
+from shared.db_utils import execute_query
 
 def deactivateLicense(event, context):
     """

@@ -1,5 +1,4 @@
 import pymysql
-import json
 
 def get_db_connection():
     """
@@ -7,7 +6,7 @@ def get_db_connection():
     """
     try:
         connection = pymysql.connect(
-            host='licensedb.[region].rds.amazonaws.com',  # Replace with your RDS endpoint
+            host='licensedb.us-east-1.rds.amazonaws.com',  # Replace with your RDS endpoint
             user='licenseusr',                                       # Replace with your username
             password='x4XtNHDJfPF8WWnhDQDmAUpn',                           # Replace with your password
             db='licensedb',                                           # Replace with your database name
