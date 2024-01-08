@@ -1,7 +1,7 @@
 -- Inserting sample data into 'users' table
-INSERT INTO users (Name, Email, Company) VALUES 
-('Henry Hill', 'henry.hill@example.com', 'self'),
-('Paulie Walnuts', 'paulie.walnuts@example.com', 'DiMeo');
+--INSERT INTO users (Name, Email, Company) VALUES
+--('Henry Hill', 'henry.hill@example.com', 'self'),
+--('Paulie Walnuts', 'paulie.walnuts@example.com', 'DiMeo');
 
 -- Inserting sample data into 'products' table
 INSERT INTO products (ProductName, Description) VALUES 

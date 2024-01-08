@@ -1,5 +1,5 @@
 import unittest
-from lambda_functions.createLicense.createLicense import createLicense
+from lambda_functions.createLicense.createLicense import createLicenses
 
 class TestCreateLicense(unittest.TestCase):
 

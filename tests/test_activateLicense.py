@@ -1,5 +1,9 @@
+import sys
+import os
 import unittest
 from lambda_functions.activateLicense.activateLicense import activateLicense
+
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
 class TestActivateLicense(unittest.TestCase):
 

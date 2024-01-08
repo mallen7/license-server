@@ -1,0 +1,3 @@
+uuid
+pymysql
+boto3

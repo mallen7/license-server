@@ -1,6 +1,22 @@
 import json
+import boto3
 from shared.db_utils import insert_record
 from shared.logger import log_event
+
+def get_api_key():
+    """Retrieve the API key from AWS Secrets Manager."""
+    secret_name = "LicenseAPIKey"  # Replace with the name of your secret
+    region_name = "us-east-1"  # Replace with your AWS region
+
+    client = boto3.client(service_name='secretsmanager', region_name=region_name)
+    get_secret_value_response = client.get_secret_value(SecretId=secret_name)
+    secret = get_secret_value_response['SecretString']
+    return json.loads(secret)['apiKey']
+
+def validate_api_key(api_key):
+    """Validate the provided API key."""
+    stored_api_key = get_api_key()
+    return api_key == stored_api_key
 
 def registerUser(event, context):
     """

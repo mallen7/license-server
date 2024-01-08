@@ -4,3 +4,5 @@
 ### How it works
 1. *UNDEVELOPED* User purchases license from website
 2. Website sends request to API to 
+
+SHARED RESOURCES ARE IN python/shared
