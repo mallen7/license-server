@@ -22,6 +22,8 @@ def registerUser(event, context):
     """
     Registers a new user in the system.
     """
+    log_event('registerUser', 'Info', 'Function invoked', event)
+
     if 'name' not in event or 'email' not in event or 'company' not in event:
         log_event('registerUser', 'Error', 'Invalid input', event)
         return {'statusCode': 400, 'body': json.dumps('Bad Request: Missing required parameters')}
@@ -31,9 +33,18 @@ def registerUser(event, context):
         email = event['email']
         company = event['company']
 
+        # Check if the user already exists
+        check_query = "SELECT * FROM users WHERE Email = %s"
+        existing_user = fetch_one(check_query, (email,))
+        if existing_user:
+            log_event('registerUser', 'Warning', 'User already exists', {'email': email})
+            return {'statusCode': 409, 'body': json.dumps('User already exists')}
+
         # Insert new user into the database
+        log_event('registerUser', 'Info', 'Inserting new user', {'email': email})
         insert_query = "INSERT INTO users (Name, Email, Company) VALUES (%s, %s, %s)"
         insert_record(insert_query, (name, email, company))
+        log_event('registerUser', 'Info', 'User registered successfully', {'email': email})
 
         return {'statusCode': 201, 'body': json.dumps('User Registered Successfully')}
 

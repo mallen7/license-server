@@ -4,55 +4,53 @@ info:
   version: "1.0.0"
 
 paths:
-  /registerUser:
-    post:
-      summary: "Register a new user"
-      operationId: "registerUser"
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                name:
-                  type: string
-                email:
-                  type: string
-                company:
-                  type: string
-      responses:
-        '200':
-          description: "License Activated Successfully"
-        '400':
-          description: "Bad Request: Missing required parameters"
-        '403':
-          description: "Forbidden: Invalid API Key"
-        '409':
-          description: "Conflict: User already exists"
-        '500':
-          description: "Internal Server Error"
+/registerUser:
+  post:
+    summary: "Register a new user"
+    operationId: "registerUser"
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+              email:
+                type: string
+              company:
+                type: string
+    responses:
+      '201':
+        description: "User registered successfully"
+      '400':
+        description: "Bad Request: Missing required parameters"
+      '409':
+        description: "User already exists"
 
-  /registerProduct:
-    post:
-      summary: "Register a new product"
-      operationId: "registerProduct"
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                productName:
-                  type: string
-                description:
-                  type: string
-      responses:
-        '201':
-          description: "Product registered successfully"
-        '400':
-          description: "Invalid request"
+/registerProduct:
+  post:
+    summary: "Register a new product"
+    operationId: "registerProduct"
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              productName:
+                type: string
+              description:
+                type: string
+    responses:
+      '201':
+        description: "Product registered successfully"
+      '400':
+        description: "Invalid request"
+      '409':
+        description: "Product already exists"
 
   /activateLicense:
     post:
@@ -75,9 +73,15 @@ paths:
                   type: string
       responses:
         '200':
-          description: "License activated successfully"
+          description: "License Activated Successfully"
         '400':
-          description: "Invalid request"
+          description: "Bad Request: Missing required parameters"
+        '403':
+          description: "Forbidden: Invalid API Key"
+        '409':
+          description: "Conflict: User already exists"
+        '500':
+          description: "Internal Server Error"
 
 /deactivateLicense:
   post:
@@ -151,6 +155,8 @@ paths:
           description: "Invalid request"
         '404':
           description: "License not found"
+        '500':
+          description: "Internal Server Error"
 
 components:
   securitySchemes:

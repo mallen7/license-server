@@ -1,4 +1,6 @@
 import json
+import boto3
+import uuid
 from shared.logger import log_event
 from shared.db_utils import execute_query
 
@@ -31,8 +33,15 @@ def deactivateLicense(event, context):
         license_key = event['licenseKey']
         device_id = event['deviceID']
 
+        # Check if the license exists
+        check_query = "SELECT * FROM licenses WHERE LicenseKey = %s AND DeviceID = %s"
+        license_record = fetch_one(check_query, (license_key, device_id))
+        if not license_record:
+            log_event('deactivateLicense', 'Warning', 'License not found', {'licenseKey': license_key, 'deviceID': device_id})
+            return {'statusCode': 404, 'body': json.dumps('License not found')}
+
+        # Deactivate the license
         log_event('deactivateLicense', 'Info', 'Deactivating license', {'licenseKey': license_key, 'deviceID': device_id})
-        # Update the license status in the database
         update_query = "UPDATE licenses SET IsActive = %s WHERE LicenseKey = %s AND DeviceID = %s"
         execute_query(update_query, (False, license_key, device_id))
 
