@@ -1,5 +1,6 @@
 import json
 import boto3
+import uuid
 from shared.db_utils import execute_query
 import shared.logger as logger
 
@@ -37,12 +38,18 @@ def activateLicense(event, context):
         product_id = event['productID']
         user_id = event['userID']
 
-        # Update the license activation status in the database
+        # Check if the license already exists and its status
+        check_query = "SELECT IsActive FROM licenses WHERE LicenseKey = %s AND ProductID = %s AND UserID = %s"
+        license_record = fetch_one(check_query, (license_key, product_id, user_id))
+
+        if license_record:
+            if license_record['IsActive']:
+                # License is already active
+                return {'statusCode': 409, 'body': json.dumps('License is already activated')}
+
+        # License is either not active or not found, proceed to activate it
         update_query = "UPDATE licenses SET IsActive = %s WHERE LicenseKey = %s AND ProductID = %s AND UserID = %s"
         execute_query(update_query, (True, license_key, product_id, user_id))
-
-        # Additional logic for device ID association if required
-        # ...
 
         return {'statusCode': 200, 'body': json.dumps('License Activated Successfully')}
 

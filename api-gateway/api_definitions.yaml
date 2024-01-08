@@ -22,10 +22,16 @@ paths:
                 company:
                   type: string
       responses:
-        '201':
-          description: "User registered successfully"
+        '200':
+          description: "License Activated Successfully"
         '400':
-          description: "Invalid request"
+          description: "Bad Request: Missing required parameters"
+        '403':
+          description: "Forbidden: Invalid API Key"
+        '409':
+          description: "Conflict: User already exists"
+        '500':
+          description: "Internal Server Error"
 
   /registerProduct:
     post:
@@ -73,49 +79,53 @@ paths:
         '400':
           description: "Invalid request"
 
-  /deactivateLicense:
-    post:
-      summary: "Deactivate a license"
-      operationId: "deactivateLicense"
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                licenseKey:
-                  type: string
-                deviceID:
-                  type: string
-      responses:
-        '200':
-          description: "License deactivated successfully"
-        '400':
-          description: "Invalid request"
+/deactivateLicense:
+  post:
+    summary: "Deactivate a license"
+    operationId: "deactivateLicense"
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              licenseKey:
+                type: string
+              deviceID:
+                type: string
+    responses:
+      '200':
+        description: "License deactivated successfully"
+      '400':
+        description: "Invalid request"
+      '404':
+        description: "License not found"  # Add this if your function handles this case
 
-  /createLicense:
-    post:
-      summary: "Create a new license"
-      operationId: "createLicense"
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                productID:
-                  type: string
-                userID:
-                  type: string
-                expiryDate:
-                  type: string  # Ensure the date format is clearly documented
-      responses:
-        '201':
-          description: "License created successfully"
-        '400':
-          description: "Invalid request"
+/createLicense:
+  post:
+    summary: "Create a new license"
+    operationId: "createLicense"
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              productID:
+                type: string
+              userID:
+                type: string
+              expiryDate:
+                type: string  # Ensure the date format is clearly documented
+    responses:
+      '201':
+        description: "License created successfully"
+      '400':
+        description: "Invalid request"
+      '409':
+        description: "License already exists"
 
   /validateLicense:
     post:

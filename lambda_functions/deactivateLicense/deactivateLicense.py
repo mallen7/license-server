@@ -21,6 +21,8 @@ def deactivateLicense(event, context):
     """
     Deactivates a license in the system.
     """
+    log_event('deactivateLicense', 'Info', 'Function invoked', event)
+
     if 'licenseKey' not in event or 'deviceID' not in event:
         log_event('deactivateLicense', 'Error', 'Invalid input', event)
         return {'statusCode': 400, 'body': json.dumps('Bad Request: Missing required parameters')}
@@ -29,10 +31,12 @@ def deactivateLicense(event, context):
         license_key = event['licenseKey']
         device_id = event['deviceID']
 
+        log_event('deactivateLicense', 'Info', 'Deactivating license', {'licenseKey': license_key, 'deviceID': device_id})
         # Update the license status in the database
         update_query = "UPDATE licenses SET IsActive = %s WHERE LicenseKey = %s AND DeviceID = %s"
         execute_query(update_query, (False, license_key, device_id))
 
+        log_event('deactivateLicense', 'Info', 'License deactivated successfully', {'licenseKey': license_key})
         return {'statusCode': 200, 'body': json.dumps('License Deactivated Successfully')}
 
     except Exception as e:
